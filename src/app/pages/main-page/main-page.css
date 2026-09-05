@@ -1,0 +1,123 @@
+.app-background {
+  background-color: #2b2b2b;
+  min-height: 100vh;
+  padding: 40px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.tabs-background-strip {
+  padding-top: 20px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 15px;
+  padding: 0 30px;
+  transform: translateY(2px);
+  position: relative;
+  z-index: 10;
+}
+
+.tab {
+  background-color: #ffffff;
+  padding: 12px 30px;
+  border-radius: 20px 20px 0 0;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+
+.tab:not(.active) {
+  background-color: #fcfcfc;
+  transform: scaleY(0.9);
+  transform-origin: bottom;
+  color: #888;
+}
+
+.tab.active {
+  font-weight: 600;
+  color: #333;
+}
+
+.folder-body {
+
+  background-color: #d6c3a3;
+  padding: 20px;
+  border-radius: 0 20px 20px 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 5;
+}
+
+.paper-sheet {
+
+  background-color: #fef4df;
+  min-height: 500px;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 15px rgba(200, 180, 150, 0.2);
+}
+
+
+.add-btn {
+  background-color: #eae1d0;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #dfd4c1;
+}
+
+.plus-icon {
+  font-size: 32px;
+  color: #7a7a7a;
+  font-weight: 400;
+}
+
+
+.notebook-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.notebook-table th,
+.notebook-table td {
+
+  border-bottom: 2px dotted #8c8c8c;
+  border-left: 2px dotted #8c8c8c;
+  padding: 15px;
+  text-align: left;
+  color: #444;
+}
+
+
+.notebook-table th:first-child,
+.notebook-table td:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.notebook-table th {
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding-bottom: 20px;
+}
+
+
+.notebook-table td {
+  height: 50px;
+}

@@ -4,14 +4,14 @@
     <h2>Zaloguj się</h2>
     <div class="form-group">
       <label>Login</label>
-      <input type="text" id="username" name="username" required>
+      <input type="text" id="username" name="username" required [(ngModel)]="log">
     </div>
     <div class="form-group">
       <label>Hasło</label>
-      <input type="password" id="password" name="password" required>
+      <input type="password" id="password" name="password" required [(ngModel)]="password">
     </div>
     <div class="button-div">
-      <button class="login-btn">Zaloguj</button>
+      <button class="login-btn" (click)="login()">Zaloguj</button>
     </div>
   </form>
 

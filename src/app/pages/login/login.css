@@ -43,7 +43,7 @@ input{
 }
 .login-btn{
   width:100%;
-  background-color: green;
+  background-color: dodgerblue;
   color:white;
   border: none;
   padding: 14px;
@@ -53,4 +53,7 @@ input{
   cursor: pointer;
   transition: background 0.2s,transform 0.1s;
   margin-top: 1rem;
+}
+.login-btn:hover{
+  background-color: darkcyan;
 }

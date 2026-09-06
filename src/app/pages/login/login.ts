@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {environment} from '../../../environments/environment.development';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   imports: [
     FormsModule
@@ -14,6 +14,7 @@ import {environment} from '../../../environments/environment.development';
 export class Login {
   password = '';
   log = '';
+  private http = inject(HttpClient);
 
   constructor(private router: Router){}
 
@@ -21,20 +22,12 @@ export class Login {
     this.router.navigate(['/mainPage']);
   }
 
-  async login(){
-    const response = await fetch(environment.apiUrl,{
-      method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify({
-        log : this.log,
-        password : this.password
-      })
+  login(){
+    this.http.post(environment.apiUrl, { log: this.log, password: this.password }, {
+      withCredentials: true
+    }).subscribe({
+      next: () => this.goHome(),
+      error: () => console.error('Błąd logowania:')
     });
-
-    if (response.ok){
-      this.goHome();
-    }else{
-      console.error("Błąd logowania")
-    }
   }
 }

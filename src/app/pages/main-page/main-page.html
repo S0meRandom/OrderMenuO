@@ -4,8 +4,12 @@
 
 
     <div class="tabs-container">
-      <div class="tab active">Zamówienia</div>
-      <div class="tab">Klienci na cito</div>
+      <div class="tab"
+           [class.active]="mainOrdersPage" (click)="mainOrdersPage = true; citoOrdersPage=false">
+        Zamówienia</div>
+      <div class="tab"
+           [class.active]="citoOrdersPage" (click)="citoOrdersPage = true; mainOrdersPage=false">
+        Klienci na cito</div>
     </div>
 
   </div>
@@ -15,14 +19,53 @@
 
     <div class="paper-sheet">
 
-      <button class="add-btn">
+      <button class="add-btn" (click)="modalOpen = true">
         <span class="plus-icon">+</span>
       </button>
+      @if (modalOpen) {
+        <div class="modal-overlay" (click)="modalOpen = false">
+
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Dodaj nowe zamówienie</h3>
+
+            <form class="newOrderForm">
+              <div class="newOrderLabel">
+                <label>Nazwa klienta</label>
+                <input type="text" required>
+              </div>
+              <div class="newOrderLabel">
+                <label>Zamówienie</label>
+                <input type="text" required>
+              </div>
+              <div class="newOrderLabel">
+                <label>Ilość</label>
+                <input type="number" required>
+              </div>
+              <div class="newOrderLabel">
+                <label>Cena</label>
+                <input type="number" required>
+              </div>
+              <div class="newOrderLabel">
+                <label>Data złożenia</label>
+                <input type="text" required>
+              </div>
+              <div class="newOrderLabel">
+                <label>Kraj wysyłki</label>
+                <input type="text" required>
+              </div>
+            </form>
+
+
+            <button>Zapisz</button>
+          </div>
+
+        </div>
+      }
 
 
       <table class="notebook-table">
         <thead>
-        <tr>
+        <tr id="tableHeader">
           <th>Nazwa klienta</th>
           <th>Figurka</th>
           <th>Status</th>
@@ -32,12 +75,48 @@
           <th>Kraj wysyłki</th>
         </tr>
         </thead>
+        @if (mainOrdersPage){
         <tbody>
-        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          @for (order of orders; track order.id) {
+            <tr>
+              <td>{{ order.name }}</td>
+              <td>{{ order.order }}</td>
+              <td>{{ order.status}}</td>
+              <td>{{ order.quantity }}</td>
+              <td>{{ order.price }} PLN</td>
+              <td>{{ order.data }}</td>
+              <td>{{ order.country }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" style="text-align: center; color: #888;">
+                Brak zamówień w systemie.
+              </td>
+            </tr>
+          }
         </tbody>
+        }
+        @if (citoOrdersPage){
+          <tbody>
+            @for (order of citoOrders; track order.id) {
+              <tr>
+                <td>{{ order.name }}</td>
+                <td>{{ order.order }}</td>
+                <td>{{ order.status}}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }} PLN</td>
+                <td>{{ order.data }}</td>
+                <td>{{ order.country }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" style="text-align: center; color: #888;">
+                  Brak zamówień w systemie.
+                </td>
+              </tr>
+            }
+          </tbody>
+        }
       </table>
 
     </div>

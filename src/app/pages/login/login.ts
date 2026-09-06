@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
+import {environment} from '../../../environments/environment.development';
 
 @Component({
   imports: [
@@ -21,7 +22,7 @@ export class Login {
   }
 
   async login(){
-    const response = await fetch("",{
+    const response = await fetch(environment.apiUrl,{
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify({

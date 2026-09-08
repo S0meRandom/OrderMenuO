@@ -201,13 +201,6 @@
 }
 
 
-.newOrderLabel input:focus {
-  border-color: #bfa88c;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(191, 168, 140, 0.3);
-}
-
-
 @media (max-width: 500px) {
   .newOrderForm {
     grid-template-columns: 1fr;

@@ -10,7 +10,9 @@
       <div class="tab"
            [class.active]="citoOrdersPage" (click)="citoOrdersPage = true; mainOrdersPage=false">
         Klienci na cito</div>
+      <div class="tab">Zakończone </div>
     </div>
+
 
   </div>
 
@@ -76,13 +78,13 @@
         </thead>
         @if (mainOrdersPage){
         <tbody>
-          @for (order of orders; track order.id) {
+          @for (order of normalOrders; track order.id) {
             <tr>
-              <td>{{ order.name }}</td>
-              <td>{{ order.order }}</td>
+              <td>{{ order.clientName }}</td>
+              <td>{{ order.orderName }}</td>
               <td>{{ order.status}}</td>
               <td>{{ order.quantity }}</td>
-              <td>{{ order.price }} PLN</td>
+              <td>{{ order.price }} €</td>
               <td>{{ order.date }}</td>
               <td>{{ order.country }}</td>
             </tr>
@@ -99,11 +101,11 @@
           <tbody>
             @for (order of citoOrders; track order.id) {
               <tr>
-                <td>{{ order.name }}</td>
-                <td>{{ order.order }}</td>
+                <td>{{ order.clientName}}</td>
+                <td>{{ order.orderName }}</td>
                 <td>{{ order.status}}</td>
                 <td>{{ order.quantity }}</td>
-                <td>{{ order.price }} PLN</td>
+                <td>{{ order.price }} €</td>
                 <td>{{ order.date }}</td>
                 <td>{{ order.country }}</td>
               </tr>

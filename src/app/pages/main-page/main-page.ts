@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {environment} from '../../../environments/environment.development';
 
 export interface Order {
   id: string,
-  name : string,
-  order : string,
+  clientName : string,
+  orderName : string,
   status : string,
   quantity : number,
   price : number,
   date: string,
   country: string,
-  cito: boolean
+  isCito: boolean
 }
 
 @Component({
@@ -23,6 +23,7 @@ export interface Order {
   templateUrl: './main-page.html',
 })
 export class MainPage implements OnInit{
+  private cdr = inject(ChangeDetectorRef);
   modalOpen = false;
   citoOrdersPage = false;
   mainOrdersPage = true;
@@ -33,11 +34,13 @@ export class MainPage implements OnInit{
   newOrderCountry = '';
   newOrderCito = false;
   orders : Order[] = [];
-  citoOrders = this.getCitoOrders();
+  citoOrders : Order[] = [];
+  normalOrders: Order[] = [];
 
-  ngOnInit() {
-    this.fetchOrders();
+  async ngOnInit() {
+    await this.fetchOrders();
   }
+
   async fetchOrders() {
     try {
       const response = await fetch(environment.apiUrl, {
@@ -47,13 +50,20 @@ export class MainPage implements OnInit{
 
       if (response.ok) {
         this.orders = await response.json();
+        this.citoOrders = this.getCitoOrders();
+        this.normalOrders = this.getNormalOrders();
+        this.cdr.detectChanges();
       }
     } catch (error) {
       console.error('Błąd podczas pobierania danych:', error);
     }
   }
   getCitoOrders(): Order[] {
-    return this.orders.filter(order => order.cito === true);
+    return this.orders.filter(order => order.isCito === true);
+  }
+  getNormalOrders(): Order[] {
+    return this.orders.filter(order => order.isCito === false);
+
   }
 
   async createNewOrder() {

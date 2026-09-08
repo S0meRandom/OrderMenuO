@@ -31,32 +31,31 @@
             <form class="newOrderForm">
               <div class="newOrderLabel">
                 <label>Nazwa klienta</label>
-                <input type="text" required>
+                <input type="text"  required name="clientName" [(ngModel)]="newOrderClientName">
               </div>
               <div class="newOrderLabel">
                 <label>Zamówienie</label>
-                <input type="text" required>
+                <input type="text" required name="orderName" [(ngModel)]="newOrderOrderName">
               </div>
               <div class="newOrderLabel">
                 <label>Ilość</label>
-                <input type="number" required>
+                <input type="number" name="orderQuantity" required [(ngModel)]="newOrderQuantity">
               </div>
               <div class="newOrderLabel">
                 <label>Cena</label>
-                <input type="number" required>
-              </div>
-              <div class="newOrderLabel">
-                <label>Data złożenia</label>
-                <input type="text" required>
+                <input type="number" name="orderPrice" required [(ngModel)]="newOrderPrice">
               </div>
               <div class="newOrderLabel">
                 <label>Kraj wysyłki</label>
-                <input type="text" required>
+                <input type="text" required name="orderCountry" [(ngModel)]="newOrderCountry">
               </div>
+              <div class="newOrderLabel">
+                <label>Czy zamówienie jest na cito?</label>
+                <input type="checkbox" name="orderCito" [(ngModel)]="newOrderCito">
+              </div>
+              <button type="submit" (click)="createNewOrder()">Zapisz</button>
+
             </form>
-
-
-            <button>Zapisz</button>
           </div>
 
         </div>
@@ -84,7 +83,7 @@
               <td>{{ order.status}}</td>
               <td>{{ order.quantity }}</td>
               <td>{{ order.price }} PLN</td>
-              <td>{{ order.data }}</td>
+              <td>{{ order.date }}</td>
               <td>{{ order.country }}</td>
             </tr>
           } @empty {
@@ -105,7 +104,7 @@
                 <td>{{ order.status}}</td>
                 <td>{{ order.quantity }}</td>
                 <td>{{ order.price }} PLN</td>
-                <td>{{ order.data }}</td>
+                <td>{{ order.date }}</td>
                 <td>{{ order.country }}</td>
               </tr>
             } @empty {

@@ -23,7 +23,7 @@ export class Login {
   }
 
   login(){
-    this.http.post(environment.apiUrl, { log: this.log, password: this.password }, {
+    this.http.post(environment.apiUrl + '/login', { log: this.log, password: this.password }, {
       withCredentials: true
     }).subscribe({
       next: () => this.goHome(),

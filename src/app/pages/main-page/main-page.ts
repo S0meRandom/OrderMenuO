@@ -36,6 +36,15 @@ export class MainPage implements OnInit{
   orders : Order[] = [];
   citoOrders : Order[] = [];
   normalOrders: Order[] = [];
+  editOrderModalOpen = false;
+  editOrderClientName = '';
+  editOrderOrderName = '';
+  editOrderQuantity = 0;
+  editOrderPrice = 0;
+  editOrderCountry = '';
+  editOrderCito = false;
+  editOrderId = '';
+
 
   async ngOnInit() {
     await this.fetchOrders();
@@ -83,21 +92,72 @@ export class MainPage implements OnInit{
         body: JSON.stringify(newOrder)
       });
       if(response.ok){
-        this.resetForm();
+        this.resetNewOrderForm();
         this.fetchOrders();
       }
     }catch(error){
 
     }
   }
-  resetForm() {
+  resetNewOrderForm() {
     this.newOrderClientName = '';
     this.newOrderOrderName = '';
     this.newOrderCountry = '';
     this.newOrderCito = false;
     this.newOrderPrice = 0;
     this.newOrderQuantity = 0;
+  }
+  resetEditOrderForm(){
+    this.editOrderClientName = '';
+    this.editOrderOrderName = '';
+    this.editOrderQuantity = 0;
+    this.editOrderPrice = 0;
+    this.editOrderCountry = '';
+    this.editOrderCito = false;
+    this.editOrderId = '';
+  }
+  async editOrder(order:Order){
+    this.editOrderModalOpen = true;
+    this.editOrderId = order.id;
+    this.editOrderClientName = order.clientName;
+    this.editOrderOrderName = order.orderName;
+    this.editOrderQuantity = order.quantity;
+    this.editOrderPrice = order.price;
+    this.editOrderCountry = order.country;
+    this.editOrderCito = order.isCito;
+  }
+  closeEditOrderModal(){
+    this.editOrderModalOpen = false;
+    this.resetEditOrderForm();
+  }
+  async submitEditOrder(){
+    const editedOrder = {
+      id: this.editOrderId,
+      clientName: this.editOrderClientName,
+      orderName: this.editOrderOrderName,
+      quantity: this.editOrderQuantity,
+      price: this.editOrderPrice,
+      country: this.editOrderCountry,
+      isOrderCito: this.editOrderCito
+    };
 
+    try {
+      const response = await fetch(environment.apiUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(editedOrder)
+      });
+
+      if (response.ok) {
+        this.editOrderModalOpen = false;
+        await this.fetchOrders();
+      } else {
+        console.error('Błąd z serwera:', await response.text());
+      }
+    } catch (error) {
+      console.error('Błąd sieci podczas edycji zamówienia:', error);
+    }
   }
 
 

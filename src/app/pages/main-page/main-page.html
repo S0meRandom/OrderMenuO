@@ -94,7 +94,10 @@
                 <input type="checkbox" name="orderCito" [ngModel]="editOrderCito">
               </div>
               <button type="submit" (click)="submitEditOrder()">Edytuj</button>
-
+              <div class="modalButtonsLabel">
+                <button class="finishOrderButton">Zakończ zamówienie</button>
+                <button class="deleteOrderButton" (click)="deleteOrder()">Usuń zamówienie</button>
+              </div>
             </form>
           </div>
 

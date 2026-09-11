@@ -207,6 +207,25 @@
   background-color: bisque;
   font-weight: bold;
 }
+.modalButtonsLabel{
+  display:flex;
+  gap: 20px;
+
+}
+.modalButtonsLabel .finishOrderButton {
+  background-color: green;
+}
+.modalButtonsLabel .deleteOrderButton {
+  background-color: orangered;
+}
+.modalButtonsLabel .deleteOrderButton:hover{
+  cursor: pointer;
+  background-color: darkred;
+}
+.modalButtonsLabel .finishOrderButton:hover{
+  cursor: pointer;
+  background-color: mediumseagreen;
+}
 
 @media (max-width: 500px) {
   .newOrderForm {

@@ -99,6 +99,22 @@ export class MainPage implements OnInit{
 
     }
   }
+  async deleteOrder(){
+    try{
+      const response = await fetch(environment.apiUrl,{
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(this.editOrderId)
+      });
+      if(response.ok){
+        this.closeEditOrderModal();
+        await this.fetchOrders();
+      }
+    }catch(error){
+    }
+
+  }
   resetNewOrderForm() {
     this.newOrderClientName = '';
     this.newOrderOrderName = '';

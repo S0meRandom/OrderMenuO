@@ -13,6 +13,19 @@ export interface Order {
   country: string,
   isCito: boolean
 }
+export interface finishedOrder {
+  id: string,
+  clientName : string,
+  orderName : string,
+  status : string,
+  quantity : number,
+  price : number,
+  dateStart: string,
+  dateEnd : string,
+  country: string,
+  isCito: boolean,
+  postalCode : string
+}
 
 @Component({
   imports: [
@@ -24,7 +37,8 @@ export interface Order {
 })
 export class MainPage implements OnInit{
   private cdr = inject(ChangeDetectorRef);
-  modalOpen = false;
+  newOrderModalOpen = false;
+  finishOrderModalOpen = false;
   citoOrdersPage = false;
   mainOrdersPage = true;
   finishedOrdersPage = false;
@@ -37,7 +51,7 @@ export class MainPage implements OnInit{
   orders : Order[] = [];
   citoOrders : Order[] = [];
   normalOrders: Order[] = [];
-  finishedOrders: Order[] = [];
+  finishedOrders: finishedOrder[] = [];
   editOrderModalOpen = false;
   editOrderClientName = '';
   editOrderOrderName = '';
@@ -48,15 +62,16 @@ export class MainPage implements OnInit{
   editOrderId = '';
   editOrderStatus = '';
   editOrderDate = '';
-
+  finishOrderPostalCode = '';
 
   async ngOnInit() {
     await this.fetchOrders();
+    await this.fetchFinishedOrders();
   }
 
   async fetchOrders() {
     try {
-      const response = await fetch(environment.apiUrl, {
+      const response = await fetch(environment.apiUrl +'/orders', {
         method: 'GET',
         credentials: 'include'
       });
@@ -65,21 +80,33 @@ export class MainPage implements OnInit{
         this.orders = await response.json();
         this.citoOrders = this.getCitoOrders();
         this.normalOrders = this.getNormalOrders();
-        this.finishedOrders = this.getFinishedOrder();
         this.cdr.detectChanges();
       }
     } catch (error) {
       console.error('Błąd podczas pobierania danych:', error);
     }
   }
+  async fetchFinishedOrders(){
+    try {
+      const response = await fetch(environment.apiUrl + '/finishOrders', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        this.finishedOrders = await response.json();
+        this.cdr.detectChanges();
+      }
+    } catch (error) {
+      console.error('Błąd podczas pobierania danych:', error);
+    }
+
+  }
   getCitoOrders(): Order[] {
     return this.orders.filter(order => order.isCito === true && order.status === 'Aktywny');
   }
   getNormalOrders(): Order[] {
     return this.orders.filter(order => order.isCito === false && order.status === 'Aktywny');
-  }
-  getFinishedOrder() : Order[] {
-    return this.orders.filter(order => order.status == 'Zakończone');
   }
 
   async createNewOrder() {
@@ -100,6 +127,7 @@ export class MainPage implements OnInit{
       });
       if(response.ok){
         this.resetNewOrderForm();
+        this.newOrderModalOpen = false;
         this.fetchOrders();
       }
     }catch(error){
@@ -132,6 +160,7 @@ export class MainPage implements OnInit{
       country: this.editOrderCountry,
       isOrderCito: this.editOrderCito,
       date : this.editOrderDate,
+      postalCode : this.finishOrderPostalCode,
       status: 'Zakończone'
     };
     try{
@@ -143,7 +172,10 @@ export class MainPage implements OnInit{
       });
       if(response.ok){
         this.fetchOrders();
+        this.fetchFinishedOrders();
+        this.finishOrderPostalCode = '';
         this.closeEditOrderModal();
+        this.finishOrderModalOpen = false;
       }
 
     }catch(error){

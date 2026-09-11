@@ -27,6 +27,7 @@ export class MainPage implements OnInit{
   modalOpen = false;
   citoOrdersPage = false;
   mainOrdersPage = true;
+  finishedOrdersPage = false;
   newOrderClientName = '';
   newOrderOrderName = '';
   newOrderQuantity = 0;
@@ -36,6 +37,7 @@ export class MainPage implements OnInit{
   orders : Order[] = [];
   citoOrders : Order[] = [];
   normalOrders: Order[] = [];
+  finishedOrders: Order[] = [];
   editOrderModalOpen = false;
   editOrderClientName = '';
   editOrderOrderName = '';
@@ -44,6 +46,8 @@ export class MainPage implements OnInit{
   editOrderCountry = '';
   editOrderCito = false;
   editOrderId = '';
+  editOrderStatus = '';
+  editOrderDate = '';
 
 
   async ngOnInit() {
@@ -61,6 +65,7 @@ export class MainPage implements OnInit{
         this.orders = await response.json();
         this.citoOrders = this.getCitoOrders();
         this.normalOrders = this.getNormalOrders();
+        this.finishedOrders = this.getFinishedOrder();
         this.cdr.detectChanges();
       }
     } catch (error) {
@@ -68,11 +73,13 @@ export class MainPage implements OnInit{
     }
   }
   getCitoOrders(): Order[] {
-    return this.orders.filter(order => order.isCito === true);
+    return this.orders.filter(order => order.isCito === true && order.status === 'Aktywny');
   }
   getNormalOrders(): Order[] {
-    return this.orders.filter(order => order.isCito === false);
-
+    return this.orders.filter(order => order.isCito === false && order.status === 'Aktywny');
+  }
+  getFinishedOrder() : Order[] {
+    return this.orders.filter(order => order.status == 'Zakończone');
   }
 
   async createNewOrder() {
@@ -115,6 +122,35 @@ export class MainPage implements OnInit{
     }
 
   }
+  async finishOrder(){
+    const finishedOrder = {
+      id: this.editOrderId,
+      clientName: this.editOrderClientName,
+      orderName: this.editOrderOrderName,
+      quantity: this.editOrderQuantity,
+      price: this.editOrderPrice,
+      country: this.editOrderCountry,
+      isOrderCito: this.editOrderCito,
+      date : this.editOrderDate,
+      status: 'Zakończone'
+    };
+    try{
+      const response = await fetch(environment.apiUrl + '/finishOrder',{
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(finishedOrder)
+      });
+      if(response.ok){
+        this.fetchOrders();
+        this.closeEditOrderModal();
+      }
+
+    }catch(error){
+
+    }
+
+  }
   resetNewOrderForm() {
     this.newOrderClientName = '';
     this.newOrderOrderName = '';
@@ -131,6 +167,8 @@ export class MainPage implements OnInit{
     this.editOrderCountry = '';
     this.editOrderCito = false;
     this.editOrderId = '';
+    this.editOrderStatus = '';
+    this.editOrderDate = '';
   }
   async editOrder(order:Order){
     this.editOrderModalOpen = true;
@@ -141,6 +179,8 @@ export class MainPage implements OnInit{
     this.editOrderPrice = order.price;
     this.editOrderCountry = order.country;
     this.editOrderCito = order.isCito;
+    this.editOrderStatus = order.status;
+    this.editOrderDate = order.date;
   }
   closeEditOrderModal(){
     this.editOrderModalOpen = false;
@@ -154,7 +194,8 @@ export class MainPage implements OnInit{
       quantity: this.editOrderQuantity,
       price: this.editOrderPrice,
       country: this.editOrderCountry,
-      isOrderCito: this.editOrderCito
+      isOrderCito: this.editOrderCito,
+      status: this.editOrderStatus
     };
 
     try {

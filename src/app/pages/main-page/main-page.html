@@ -5,12 +5,14 @@
 
     <div class="tabs-container">
       <div class="tab"
-           [class.active]="mainOrdersPage" (click)="mainOrdersPage = true; citoOrdersPage=false">
+           [class.active]="mainOrdersPage" (click)="mainOrdersPage = true; citoOrdersPage=false;finishedOrdersPage=false">
         Zamówienia</div>
       <div class="tab"
-           [class.active]="citoOrdersPage" (click)="citoOrdersPage = true; mainOrdersPage=false">
-        Klienci na cito</div>
-      <div class="tab">Zakończone </div>
+           [class.active]="citoOrdersPage" (click)="citoOrdersPage = true; mainOrdersPage=false;finishedOrdersPage=false">
+        Klienci na cito
+      </div>
+      <div class="tab" [class.active]="finishedOrdersPage" (click)="finishedOrdersPage = true; mainOrdersPage=false;citoOrdersPage=false">Zakończone
+      </div>
     </div>
 
 
@@ -55,7 +57,7 @@
                 <label>Czy zamówienie jest na cito?</label>
                 <input type="checkbox" name="orderCito" [(ngModel)]="newOrderCito">
               </div>
-              <button type="submit" (click)="createNewOrder()">Zapisz</button>
+              <button (click)="createNewOrder()">Zapisz</button>
 
             </form>
           </div>
@@ -95,7 +97,7 @@
               </div>
               <button type="submit" (click)="submitEditOrder()">Edytuj</button>
               <div class="modalButtonsLabel">
-                <button class="finishOrderButton">Zakończ zamówienie</button>
+                <button class="finishOrderButton" (click)="finishOrder()">Zakończ zamówienie</button>
                 <button class="deleteOrderButton" (click)="deleteOrder()">Usuń zamówienie</button>
               </div>
             </form>
@@ -133,12 +135,34 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" style="text-align: center; color: #888;">
+              <td colspan="7" style="text-align: center; color: #888;">
                 Brak zamówień w systemie.
               </td>
             </tr>
           }
         </tbody>
+        }
+        @if (finishedOrdersPage){
+          <tbody>
+            @for (order of finishedOrders; track order.id) {
+              <tr>
+                <td>{{ order.clientName }}</td>
+                <td>{{ order.orderName }}</td>
+                <td>{{ order.status}}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }} €</td>
+                <td>{{ order.date }}</td>
+                <td>{{ order.country }}</td>
+                <td class="editButton" (click)="editOrder(order)">Edytuj</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" style="text-align: center; color: #888;">
+                  Brak zamówień w systemie.
+                </td>
+              </tr>
+            }
+          </tbody>
         }
         @if (citoOrdersPage){
           <tbody>
@@ -155,7 +179,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" style="text-align: center; color: #888;">
+                <td colspan="7" style="text-align: center; color: #888;">
                   Brak zamówień w systemie.
                 </td>
               </tr>

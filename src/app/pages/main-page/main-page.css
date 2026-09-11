@@ -226,7 +226,13 @@
   cursor: pointer;
   background-color: mediumseagreen;
 }
-
+.modalButtonsLabel .finishOrderButtonModal{
+  background-color: green;
+  border-radius: 12px;
+  padding: 10px 12px;
+  height: 40px;
+  margin-top: 22px;
+}
 @media (max-width: 500px) {
   .newOrderForm {
     grid-template-columns: 1fr;

@@ -23,11 +23,11 @@
 
     <div class="paper-sheet">
 
-      <button class="add-btn" (click)="modalOpen = true">
+      <button class="add-btn" (click)="newOrderModalOpen = true">
         <span class="plus-icon">+</span>
       </button>
-      @if (modalOpen) {
-        <div class="modal-overlay" (click)="modalOpen = false">
+      @if (newOrderModalOpen) {
+        <div class="modal-overlay" (click)="newOrderModalOpen = false">
 
           <div class="modal-card" (click)="$event.stopPropagation()">
             <h3>Dodaj nowe zamówienie</h3>
@@ -97,8 +97,39 @@
               </div>
               <button type="submit" (click)="submitEditOrder()">Edytuj</button>
               <div class="modalButtonsLabel">
-                <button class="finishOrderButton" (click)="finishOrder()">Zakończ zamówienie</button>
+                <button class="finishOrderButton" (click)="finishOrderModalOpen=true">Zakończ zamówienie</button>
                 <button class="deleteOrderButton" (click)="deleteOrder()">Usuń zamówienie</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      }
+      @if (finishOrderModalOpen) {
+        <div class="modal-overlay" (click)="finishOrderModalOpen=false">
+
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Podaj kod pocztowy</h3>
+
+            <form class="newOrderForm" (ngSubmit)="finishOrder()" #finishOrderForm="ngForm">
+              <div class="newOrderLabel">
+                <label for="postalCode">Kod pocztowy</label>
+                <input
+                  type="text"
+                  id="postalCode"
+                  name="postalCode"
+                  [(ngModel)]="finishOrderPostalCode"
+                  required
+                  placeholder="np. 00-000">
+              </div>
+
+              <div class="modalButtonsLabel">
+                <button
+                  type="submit"
+                  class="finishOrderButtonModal"
+                  [disabled]="!finishOrderForm.form.valid">
+                  Zakończ zamówienie
+                </button>
               </div>
             </form>
           </div>
@@ -116,7 +147,9 @@
           <th>Ilość</th>
           <th>Cena</th>
           <th>Data złożenia</th>
+          @if (finishedOrdersPage) {<th>Data zakończenia</th>}
           <th>Kraj wysyłki</th>
+          @if (finishedOrdersPage){<th>Kod wysyłki</th>}
           <th></th>
         </tr>
         </thead>
@@ -151,13 +184,14 @@
                 <td>{{ order.status}}</td>
                 <td>{{ order.quantity }}</td>
                 <td>{{ order.price }} €</td>
-                <td>{{ order.date }}</td>
+                <td>{{ order.dateStart }}</td>
+                <td>{{order.dateEnd}}</td>
                 <td>{{ order.country }}</td>
-                <td class="editButton" (click)="editOrder(order)">Edytuj</td>
+                <td>{{order.postalCode}}</td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" style="text-align: center; color: #888;">
+                <td colspan="9" style="text-align: center; color: #888;">
                   Brak zamówień w systemie.
                 </td>
               </tr>

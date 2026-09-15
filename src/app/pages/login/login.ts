@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
-import {environment} from '../../../environments/environment.development';
+import {environment} from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 @Component({
   imports: [

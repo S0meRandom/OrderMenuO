@@ -21,6 +21,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Stworzenie pliku environment.ts
+        run: |
+          mkdir -p src/environments
+          cat <<EOF > src/environments/environment.ts
+          export const environment = {
+            production: true,
+            apiUrl: ${{secrets.AWS_LAMBDA_URL}}
+          };
+          EOF
 
       - name: Budowanie pliku
         run: |

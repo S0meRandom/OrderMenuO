@@ -141,21 +141,25 @@
       <table class="notebook-table">
         <thead>
         <tr id="tableHeader">
-          <th>Nazwa klienta</th>
-          <th>Figurka</th>
-          <th>Status</th>
-          <th>Ilość</th>
-          <th>Cena</th>
-          <th>Data złożenia</th>
-          @if (finishedOrdersPage) {<th>Data zakończenia</th>}
-          <th>Kraj wysyłki</th>
-          @if (finishedOrdersPage){<th>Kod wysyłki</th>}
+          <th (click)="toggleSort('clientName')" style="cursor: pointer;" title="Sortuj">Nazwa klienta {{ getSortIcon('clientName') }}</th>
+          <th (click)="toggleSort('orderName')" style="cursor: pointer;" title="Sortuj">Figurka {{ getSortIcon('orderName') }}</th>
+          <th (click)="toggleSort('status')" style="cursor: pointer;" title="Sortuj">Status {{ getSortIcon('status') }}</th>
+          <th (click)="toggleSort('quantity')" style="cursor: pointer;" title="Sortuj">Ilość {{ getSortIcon('quantity') }}</th>
+          <th (click)="toggleSort('price')" style="cursor: pointer;" title="Sortuj">Cena {{ getSortIcon('price') }}</th>
+          <th (click)="toggleSort(finishedOrdersPage ? 'dateStart' : 'date')" style="cursor: pointer;" title="Sortuj">Data złożenia {{ getSortIcon(finishedOrdersPage ? 'dateStart' : 'date') }}</th>
+          @if (finishedOrdersPage) {
+            <th (click)="toggleSort('dateEnd')" style="cursor: pointer;" title="Sortuj">Data zakończenia {{ getSortIcon('dateEnd') }}</th>
+          }
+          <th (click)="toggleSort('country')" style="cursor: pointer;" title="Sortuj">Kraj wysyłki {{ getSortIcon('country') }}</th>
+          @if (finishedOrdersPage){
+            <th (click)="toggleSort('postalCode')" style="cursor: pointer;" title="Sortuj">Kod wysyłki {{ getSortIcon('postalCode') }}</th>
+          }
           <th></th>
         </tr>
         </thead>
         @if (mainOrdersPage){
         <tbody>
-          @for (order of normalOrders; track order.id) {
+          @for (order of normalOrders | sort: sortKey: sortDirection; track order.id) {
             <tr>
               <td>{{ order.clientName }}</td>
               <td>{{ order.orderName }}</td>
@@ -177,7 +181,7 @@
         }
         @if (finishedOrdersPage){
           <tbody>
-            @for (order of finishedOrders; track order.id) {
+            @for (order of finishedOrders | sort: sortKey:sortDirection; track order.id) {
               <tr>
                 <td>{{ order.clientName }}</td>
                 <td>{{ order.orderName }}</td>
@@ -200,7 +204,7 @@
         }
         @if (citoOrdersPage){
           <tbody>
-            @for (order of citoOrders; track order.id) {
+            @for (order of citoOrders | sort: sortKey:sortDirection; track order.id) {
               <tr>
                 <td>{{ order.clientName}}</td>
                 <td>{{ order.orderName }}</td>

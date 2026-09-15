@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {environment} from '../../../environments/environment';
+import {SortPipe} from '../../sort-pipe';
 
 export interface Order {
   id: string,
@@ -29,7 +30,8 @@ export interface finishedOrder {
 
 @Component({
   imports: [
-    FormsModule
+    FormsModule,
+    SortPipe
   ],
   selector: 'app-main-page',
   styleUrl: './main-page.css',
@@ -63,6 +65,8 @@ export class MainPage implements OnInit{
   editOrderStatus = '';
   editOrderDate = '';
   finishOrderPostalCode = '';
+  sortKey: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   async ngOnInit() {
     await this.fetchOrders();
@@ -247,6 +251,19 @@ export class MainPage implements OnInit{
     } catch (error) {
       console.error('Błąd sieci podczas edycji zamówienia:', error);
     }
+  }
+  toggleSort(column: string) {
+    if (this.sortKey === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortKey = column;
+      this.sortDirection = 'asc';
+    }
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortKey !== column) return '↕';
+    return this.sortDirection === 'asc' ? '▲' : '▼';
   }
 
 

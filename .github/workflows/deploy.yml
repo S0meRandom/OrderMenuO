@@ -27,7 +27,7 @@ jobs:
           cat <<EOF > src/environments/environment.ts
           export const environment = {
             production: true,
-            apiUrl: '${{ secrets.API_URL }}'
+            apiUrl: '${{ secrets.AWS_LAMBDA_URL }}'
           };
           EOF
 

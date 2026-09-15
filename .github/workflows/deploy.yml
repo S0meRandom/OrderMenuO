@@ -1,0 +1,40 @@
+name: CI/CD to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie kodu
+        uses: actions/checkout@v4
+
+      - name: Instalacja Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Budowanie pliku
+        run: |
+          npm install
+          npm run build
+
+      - name: Logowanie OIDC do AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::610489688167:role/GitHubActions-S3-Deployable
+          aws-region: eu-central-1
+
+      - name: Wgranie na S3
+        run: aws s3 sync dist/OrderMenuO/browser s3://${{ secrets.AWS_S3_BUCKET }} --delete
+
+      - name: Czyszczenie cache CloudFront
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"

@@ -3,8 +3,7 @@ name: CI/CD to AWS
 on:
   push:
     branches:
-      - master
-
+      - main
 
 permissions:
   id-token: write
@@ -21,26 +20,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Stworzenie pliku environment.ts
         run: |
           mkdir -p src/environments
           cat <<EOF > src/environments/environment.ts
           export const environment = {
             production: true,
-            apiUrl: ${{secrets.AWS_LAMBDA_URL}}
+            apiUrl: '${{ secrets.API_URL }}'
           };
           EOF
-
-      - name: Budowanie pliku
-        run: |
-          npm install
-          npm run build
 
       - name: Logowanie OIDC do AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::610489688167:role/GitHubActions-S3-Deployable
           aws-region: eu-central-1
+
+      - name: Budowanie aplikacji
+        run: |
+          npm install
+          npm run build
 
       - name: Wgranie na S3
         run: aws s3 sync dist/OrderMenuO/browser s3://${{ secrets.AWS_S3_BUCKET }} --delete

@@ -31,10 +31,11 @@ jobs:
           };
           EOF
 
-      - name: Logowanie OIDC do AWS
+      - name: Logowanie do AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::610489688167:role/GitHubActions-S3-Deployable
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
       - name: Budowanie aplikacji

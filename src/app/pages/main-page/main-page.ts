@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {environment} from '../../../environments/environment.development';
+import {environment} from '../../../environments/environment';
 
 export interface Order {
   id: string,

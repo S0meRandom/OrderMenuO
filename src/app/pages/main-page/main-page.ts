@@ -231,7 +231,8 @@ export class MainPage implements OnInit{
       price: this.editOrderPrice,
       country: this.editOrderCountry,
       isOrderCito: this.editOrderCito,
-      status: this.editOrderStatus
+      status: this.editOrderStatus,
+      date: this.editOrderDate
     };
 
     try {

@@ -139,12 +139,15 @@ export class MainPage implements OnInit{
     }
   }
   async deleteOrder(){
+    const body = {
+      id : this.editOrderId
+    };
     try{
       const response = await fetch(environment.apiUrl,{
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(this.editOrderId)
+        body: JSON.stringify(body)
       });
       if(response.ok){
         this.closeEditOrderModal();

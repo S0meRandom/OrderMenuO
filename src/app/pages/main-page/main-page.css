@@ -159,12 +159,18 @@
   display: flex;
   flex-direction: column;
 }
+.modal-card h3{
+  text-align: center;
+}
 .modal-card button {
   border-radius: 8px;
   border: none;
   background-color: dodgerblue;
   padding: 10px 12px;
   color: white;
+  width: 100px;
+  font-weight: bold;
+
 
 }
 .modal-card button:hover{
@@ -225,6 +231,10 @@
 .modalButtonsLabel .deleteOrderButton {
   background-color: orangered;
 }
+.modalButtonsLabel .suspendOrderButton{
+  background-color: #d97706;
+  color: #ffffff;
+}
 .modalButtonsLabel .deleteOrderButton:hover{
   cursor: pointer;
   background-color: darkred;
@@ -236,7 +246,8 @@
 .modalButtonsLabel .finishOrderButtonModal{
   background-color: green;
   border-radius: 12px;
-  padding: 10px 12px;
-  height: 40px;
+  padding: 12px 12px;
+  height: 50px;
   margin-top: 22px;
+
 }

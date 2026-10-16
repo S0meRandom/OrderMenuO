@@ -43,6 +43,7 @@ export class MainPage implements OnInit{
   finishOrderModalOpen = false;
   citoOrdersPage = false;
   mainOrdersPage = true;
+  suspendedOrdersPage = false;
   finishedOrdersPage = false;
   newOrderClientName = '';
   newOrderOrderName = '';
@@ -53,6 +54,7 @@ export class MainPage implements OnInit{
   orders : Order[] = [];
   citoOrders : Order[] = [];
   normalOrders: Order[] = [];
+  suspendedOrders: Order[] = [];
   finishedOrders: finishedOrder[] = [];
   editOrderModalOpen = false;
   editOrderClientName = '';
@@ -64,9 +66,11 @@ export class MainPage implements OnInit{
   editOrderId = '';
   editOrderStatus = '';
   editOrderDate = '';
+  isEditOrderSuspended = false;
   finishOrderPostalCode = '';
   sortKey: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
+
 
   async ngOnInit() {
     await this.fetchOrders();
@@ -84,6 +88,7 @@ export class MainPage implements OnInit{
         this.orders = await response.json();
         this.citoOrders = this.getCitoOrders();
         this.normalOrders = this.getNormalOrders();
+        this.suspendedOrders = this.getSuspendedOrders();
         this.cdr.detectChanges();
       }
     } catch (error) {
@@ -111,6 +116,33 @@ export class MainPage implements OnInit{
   }
   getNormalOrders(): Order[] {
     return this.orders.filter(order => order.isCito === false && order.status === 'Aktywny');
+  }
+  getSuspendedOrders(): Order[]{
+    return this.orders.filter(order => order.isCito === false && order.status === 'Zawieszony');
+  }
+  openMainPage(){
+    this.mainOrdersPage = true;
+    this.suspendedOrdersPage = false;
+    this.finishedOrdersPage = false;
+    this.citoOrdersPage = false;
+  }
+  openCitoOrdersPage(){
+    this.citoOrdersPage = true;
+    this.mainOrdersPage = false;
+    this.suspendedOrdersPage = false;
+    this.finishedOrdersPage = false;
+  }
+  openFinishedOrdersPage(){
+    this.finishedOrdersPage = true;
+    this.citoOrdersPage = false;
+    this.suspendedOrdersPage = false;
+    this.mainOrdersPage = false;
+  }
+  openSuspendedOrdersPage(){
+    this.suspendedOrdersPage = true;
+    this.finishedOrdersPage = false;
+    this.mainOrdersPage = false;
+    this.citoOrdersPage = false;
   }
 
   async createNewOrder() {
@@ -178,11 +210,11 @@ export class MainPage implements OnInit{
         body: JSON.stringify(finishedOrder)
       });
       if(response.ok){
-        this.fetchOrders();
-        this.fetchFinishedOrders();
-        this.finishOrderPostalCode = '';
         this.closeEditOrderModal();
         this.finishOrderModalOpen = false;
+        await this.fetchOrders();
+        await this.fetchFinishedOrders();
+        this.finishOrderPostalCode = '';
       }
 
     }catch(error){
@@ -208,9 +240,19 @@ export class MainPage implements OnInit{
     this.editOrderId = '';
     this.editOrderStatus = '';
     this.editOrderDate = '';
+    this.isEditOrderSuspended = false;
+  }
+  checkEditOrderStatus(orderStatus:string){
+    if(orderStatus === "Zawieszony"){
+      this.isEditOrderSuspended = true;
+    }else{
+      this.isEditOrderSuspended = false;
+    }
+
   }
   async editOrder(order:Order){
     this.editOrderModalOpen = true;
+    this.checkEditOrderStatus(order.status);
     this.editOrderId = order.id;
     this.editOrderClientName = order.clientName;
     this.editOrderOrderName = order.orderName;
@@ -221,6 +263,7 @@ export class MainPage implements OnInit{
     this.editOrderStatus = order.status;
     this.editOrderDate = order.date;
   }
+
   closeEditOrderModal(){
     this.editOrderModalOpen = false;
     this.resetEditOrderForm();
@@ -239,7 +282,7 @@ export class MainPage implements OnInit{
     };
 
     try {
-      const response = await fetch(environment.apiUrl, {
+      const response = await fetch(environment.apiUrl + '/editOrder', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -247,12 +290,42 @@ export class MainPage implements OnInit{
       });
 
       if (response.ok) {
-        this.editOrderModalOpen = false;
+        this.closeEditOrderModal();
         await this.fetchOrders();
       } else {
         console.error('Błąd z serwera:', await response.text());
       }
     } catch (error) {
+      console.error('Błąd sieci podczas edycji zamówienia:', error);
+    }
+  }
+  async suspendOrder(){
+    const suspendedOrder = {
+      id: this.editOrderId,
+      clientName: this.editOrderClientName,
+      orderName: this.editOrderOrderName,
+      quantity: this.editOrderQuantity,
+      price: this.editOrderPrice,
+      country: this.editOrderCountry,
+      isOrderCito: false,
+      status: this.editOrderStatus,
+      date: this.editOrderDate
+    };
+    try{
+      const response = await fetch(environment.apiUrl + '/suspendOrder',{
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify(suspendedOrder)
+      });
+      if(response.ok){
+        this.closeEditOrderModal();
+        await this.fetchOrders();
+      }else{
+        console.error('Błąd z serwera:', await response.text());
+      }
+
+    }catch(error){
       console.error('Błąd sieci podczas edycji zamówienia:', error);
     }
   }

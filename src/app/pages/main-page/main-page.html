@@ -57,6 +57,10 @@
                 <input type="text" required name="orderCountry" [(ngModel)]="newOrderCountry">
               </div>
               <div class="newOrderLabel">
+                <label>Planowana data ukończenia</label>
+                <input type="date" [(ngModel)]="newOrderPlannedDate" name="newOrderPlannedDate">
+              </div>
+              <div class="newOrderLabel">
                 <label>Czy zamówienie jest na cito?</label>
                 <input type="checkbox" name="orderCito" [(ngModel)]="newOrderCito">
               </div>
@@ -70,7 +74,7 @@
       @if (editOrderModalOpen) {
         <div class="modal-overlay" (click)=closeEditOrderModal()>
 
-          <div class="modal-card" (click)="$event.stopPropagation()">
+          <div class="modal-card-editOrder" (click)="$event.stopPropagation()">
             <h3>Edytuj zamówienie</h3>
 
             <form class="newOrderForm">
@@ -93,6 +97,10 @@
               <div class="newOrderLabel">
                 <label>Kraj wysyłki</label>
                 <input type="text" required name="orderCountry" [(ngModel)]="editOrderCountry">
+              </div>
+              <div class="newOrderLabel">
+                <label>Planowana data ukończenia</label>
+                <input type="date" name="plannedDate" [(ngModel)]="editOrderPlannedDate">
               </div>
               <div class="newOrderLabel">
                 <label>Czy zamówienie jest na cito?</label>
@@ -158,6 +166,9 @@
           @if (finishedOrdersPage){
             <th (click)="toggleSort('postalCode')" style="cursor: pointer;" title="Sortuj">Kod wysyłki {{ getSortIcon('postalCode') }}</th>
           }
+          @if (mainOrdersPage || citoOrdersPage){
+            <th>Planowana data ukończenia</th>
+          }
           <th></th>
         </tr>
         </thead>
@@ -172,6 +183,7 @@
               <td>{{ order.price }} €</td>
               <td>{{ order.date }}</td>
               <td>{{ order.country }}</td>
+              <td>{{order.plannedDate}}</td>
               <td class="editButton" (click)="editOrder(order)">Edytuj</td>
             </tr>
           } @empty {
@@ -217,6 +229,7 @@
                 <td>{{ order.price }} €</td>
                 <td>{{ order.date }}</td>
                 <td>{{ order.country }}</td>
+                <td>{{order.plannedDate}}</td>
                 <td class="editButton" (click)="editOrder(order)">Edytuj</td>
               </tr>
             } @empty {

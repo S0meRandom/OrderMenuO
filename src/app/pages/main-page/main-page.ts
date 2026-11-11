@@ -12,7 +12,8 @@ export interface Order {
   price : number,
   date: string,
   country: string,
-  isCito: boolean
+  isCito: boolean,
+  plannedEndDate: string
 }
 export interface finishedOrder {
   id: string,
@@ -51,6 +52,7 @@ export class MainPage implements OnInit{
   newOrderPrice = 0;
   newOrderCountry = '';
   newOrderCito = false;
+  newOrderPlannedDate = "";
   orders : Order[] = [];
   citoOrders : Order[] = [];
   normalOrders: Order[] = [];
@@ -65,7 +67,8 @@ export class MainPage implements OnInit{
   editOrderCito = false;
   editOrderId = '';
   editOrderStatus = '';
-  editOrderDate = '';
+  editOrderDate = "";
+  editOrderPlannedDate = "";
   isEditOrderSuspended = false;
   finishOrderPostalCode = '';
   sortKey: string = '';
@@ -152,7 +155,8 @@ export class MainPage implements OnInit{
       orderQuantity : this.newOrderQuantity,
       orderPrice : this.newOrderPrice,
       orderCountry : this.newOrderCountry,
-      isOrderCito : this.newOrderCito
+      isOrderCito : this.newOrderCito,
+      orderPlannedDate : this.newOrderPlannedDate
     };
     try{
       const response = await fetch(environment.apiUrl, {
@@ -229,6 +233,7 @@ export class MainPage implements OnInit{
     this.newOrderCito = false;
     this.newOrderPrice = 0;
     this.newOrderQuantity = 0;
+    this.newOrderPlannedDate = "";
   }
   resetEditOrderForm(){
     this.editOrderClientName = '';
@@ -241,6 +246,7 @@ export class MainPage implements OnInit{
     this.editOrderStatus = '';
     this.editOrderDate = '';
     this.isEditOrderSuspended = false;
+    this.editOrderPlannedDate = "";
   }
   checkEditOrderStatus(orderStatus:string){
     if(orderStatus === "Zawieszony"){
@@ -278,7 +284,8 @@ export class MainPage implements OnInit{
       country: this.editOrderCountry,
       isOrderCito: this.editOrderCito,
       status: this.editOrderStatus,
-      date: this.editOrderDate
+      date: this.editOrderDate,
+      plannedDate : this.editOrderPlannedDate
     };
 
     try {

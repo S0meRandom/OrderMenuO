@@ -4,12 +4,10 @@
 
 
     <div class="tabs-container">
-      <div class="tab active"
-           (click)="openMainPage()">
-        Zamówienia</div>
+      <div class="tab active">Zamówienia</div>
+      <div class="tab" (click)="openQueuePage()">Kolejka</div>
       <div class="tab"
-           (click)="openCitoOrdersPage()">
-        Na Cito
+           (click)="openCitoOrdersPage()">Na Cito
       </div>
       <div class="tab"  (click)="openFinishedOrdersPage()">
         Zakończone
@@ -148,8 +146,6 @@
 
         </div>
       }
-
-
       <table class="notebook-table">
         <thead>
         <tr id="tableHeader">
@@ -158,21 +154,15 @@
           <th (click)="toggleSort('status')" style="cursor: pointer;" title="Sortuj">Status {{ getSortIcon('status') }}</th>
           <th (click)="toggleSort('quantity')" style="cursor: pointer;" title="Sortuj">Ilość {{ getSortIcon('quantity') }}</th>
           <th (click)="toggleSort('price')" style="cursor: pointer;" title="Sortuj">Cena {{ getSortIcon('price') }}</th>
-          <th (click)="toggleSort(finishedOrdersPage ? 'dateStart' : 'date')" style="cursor: pointer;" title="Sortuj">Data złożenia {{ getSortIcon(finishedOrdersPage ? 'dateStart' : 'date') }}</th>
-          @if (finishedOrdersPage) {
-            <th (click)="toggleSort('dateEnd')" style="cursor: pointer;" title="Sortuj">Data zakończenia {{ getSortIcon('dateEnd') }}</th>
-          }
+          <th (click)="toggleSort('date')" style="cursor: pointer;" title="Sortuj">
+            Data złożenia {{ getSortIcon('date') }}
+          </th>
           <th (click)="toggleSort('country')" style="cursor: pointer;" title="Sortuj">Kraj wysyłki {{ getSortIcon('country') }}</th>
-          @if (finishedOrdersPage){
-            <th (click)="toggleSort('postalCode')" style="cursor: pointer;" title="Sortuj">Kod wysyłki {{ getSortIcon('postalCode') }}</th>
-          }
-          @if (mainOrdersPage || citoOrdersPage){
             <th>Planowana data ukończenia</th>
-          }
           <th></th>
         </tr>
         </thead>
-        @if (mainOrdersPage){
+
         <tbody>
           @for (order of normalOrders | sort: sortKey: sortDirection; track order.id) {
             <tr>
@@ -194,75 +184,6 @@
             </tr>
           }
         </tbody>
-        }
-        @if (finishedOrdersPage){
-          <tbody>
-            @for (order of finishedOrders | sort: sortKey:sortDirection; track order.id) {
-              <tr>
-                <td>{{ order.clientName }}</td>
-                <td>{{ order.orderName }}</td>
-                <td>{{ order.status}}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.price }} €</td>
-                <td>{{ order.dateStart }}</td>
-                <td>{{order.dateEnd}}</td>
-                <td>{{ order.country }}</td>
-                <td>{{order.postalCode}}</td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="9" style="text-align: center; color: #888;">
-                  Brak zamówień w systemie.
-                </td>
-              </tr>
-            }
-          </tbody>
-        }
-        @if (citoOrdersPage){
-          <tbody>
-            @for (order of citoOrders | sort: sortKey:sortDirection; track order.id) {
-              <tr>
-                <td>{{ order.clientName}}</td>
-                <td>{{ order.orderName }}</td>
-                <td>{{ order.status}}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.price }} €</td>
-                <td>{{ order.date }}</td>
-                <td>{{ order.country }}</td>
-                <td>{{order.plannedDate}}</td>
-                <td class="editButton" (click)="editOrder(order)">Edytuj</td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="7" style="text-align: center; color: #888;">
-                  Brak zamówień w systemie.
-                </td>
-              </tr>
-            }
-          </tbody>
-        }
-        @if (suspendedOrdersPage){
-          <tbody>
-            @for (order of suspendedOrders | sort: sortKey:sortDirection; track order.id) {
-              <tr>
-                <td>{{ order.clientName}}</td>
-                <td>{{ order.orderName }}</td>
-                <td>{{ order.status}}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.price }} €</td>
-                <td>{{ order.date }}</td>
-                <td>{{ order.country }}</td>
-                <td class="editButton" (click)="editOrder(order)">Edytuj</td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="7" style="text-align: center; color: #888;">
-                  Brak zamówień w systemie.
-                </td>
-              </tr>
-            }
-          </tbody>
-        }
 
 
       </table>

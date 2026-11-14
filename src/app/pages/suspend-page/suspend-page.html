@@ -1,0 +1,196 @@
+<div class="app-background">
+
+  <div class="tabs-background-strip">
+
+
+    <div class="tabs-container">
+      <div class="tab"
+            (click)="openMainPage()">
+        Zamówienia</div>
+      <div class="tab"
+           (click)="openCitoOrdersPage()">
+        Na Cito
+      </div>
+      <div class="tab"  (click)="openFinishedOrdersPage()">
+        Zakończone
+      </div>
+      <div class="tab active" (click)="openSuspendedOrdersPage()">
+        Zawieszone</div>
+    </div>
+
+
+  </div>
+
+
+  <div class="folder-body">
+
+    <div class="paper-sheet">
+
+      <button class="add-btn" (click)="newOrderModalOpen = true">
+        <span class="plus-icon">+</span>
+      </button>
+      @if (newOrderModalOpen) {
+        <div class="modal-overlay" (click)="newOrderModalOpen = false">
+
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Dodaj nowe zamówienie</h3>
+
+            <form class="newOrderForm">
+              <div class="newOrderLabel">
+                <label>Nazwa klienta</label>
+                <input type="text"  required name="clientName" [(ngModel)]="newOrderClientName">
+              </div>
+              <div class="newOrderLabel">
+                <label>Zamówienie</label>
+                <input type="text" required name="orderName" [(ngModel)]="newOrderOrderName">
+              </div>
+              <div class="newOrderLabel">
+                <label>Ilość</label>
+                <input type="number" name="orderQuantity" required [(ngModel)]="newOrderQuantity">
+              </div>
+              <div class="newOrderLabel">
+                <label>Cena</label>
+                <input type="number" name="orderPrice" required [(ngModel)]="newOrderPrice">
+              </div>
+              <div class="newOrderLabel">
+                <label>Kraj wysyłki</label>
+                <input type="text" required name="orderCountry" [(ngModel)]="newOrderCountry">
+              </div>
+              <div class="newOrderLabel">
+                <label>Planowana data ukończenia</label>
+                <input type="date" [(ngModel)]="newOrderPlannedDate" name="newOrderPlannedDate">
+              </div>
+              <div class="newOrderLabel">
+                <label>Czy zamówienie jest na cito?</label>
+                <input type="checkbox" name="orderCito" [(ngModel)]="newOrderCito">
+              </div>
+              <button (click)="createNewOrder()">Zapisz</button>
+
+            </form>
+          </div>
+
+        </div>
+      }
+      @if (editOrderModalOpen) {
+        <div class="modal-overlay" (click)=closeEditOrderModal()>
+
+          <div class="modal-card-editOrder" (click)="$event.stopPropagation()">
+            <h3>Edytuj zamówienie</h3>
+
+            <form class="newOrderForm">
+              <div class="newOrderLabel">
+                <label>Nazwa klienta</label>
+                <input type="text"  required name="clientName" [(ngModel)]="editOrderClientName">
+              </div>
+              <div class="newOrderLabel">
+                <label>Zamówienie</label>
+                <input type="text" required name="orderName" [(ngModel)]="editOrderOrderName">
+              </div>
+              <div class="newOrderLabel">
+                <label>Ilość</label>
+                <input type="number" name="orderQuantity" required [(ngModel)]="editOrderQuantity">
+              </div>
+              <div class="newOrderLabel">
+                <label>Cena</label>
+                <input type="number" name="orderPrice" required [(ngModel)]="editOrderPrice" >
+              </div>
+              <div class="newOrderLabel">
+                <label>Kraj wysyłki</label>
+                <input type="text" required name="orderCountry" [(ngModel)]="editOrderCountry">
+              </div>
+              <div class="newOrderLabel">
+                <label>Planowana data ukończenia</label>
+                <input type="date" name="plannedDate" [(ngModel)]="editOrderPlannedDate">
+              </div>
+              <div class="newOrderLabel">
+                <label>Czy zamówienie jest na cito?</label>
+                <input type="checkbox" name="orderCito" [(ngModel)]="editOrderCito">
+              </div>
+              <div class="modalButtonsLabel">
+                <button class="finishOrderButton" (click)="finishOrderModalOpen=true">Zakończ zamówienie</button>
+                <button class="deleteOrderButton" (click)="deleteOrder()">Usuń zamówienie</button>
+                <button class="suspendOrderButton" (click)="suspendOrder()">{{ isEditOrderSuspended ? 'Aktywuj zamówienie' : 'Zawieś zamówienie' }}</button>
+                <button type="submit" (click)="submitEditOrder()">Zapisz</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      }
+      @if (finishOrderModalOpen) {
+        <div class="modal-overlay" (click)="finishOrderModalOpen=false">
+
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Podaj kod pocztowy</h3>
+
+            <form class="newOrderForm" (ngSubmit)="finishOrder()" #finishOrderForm="ngForm">
+              <div class="newOrderLabel">
+                <label for="postalCode">Kod pocztowy</label>
+                <input
+                  type="text"
+                  id="postalCode"
+                  name="postalCode"
+                  [(ngModel)]="finishOrderPostalCode"
+                  required
+                  placeholder="np. 00-000">
+              </div>
+
+              <div class="modalButtonsLabel">
+                <button
+                  type="submit"
+                  class="finishOrderButtonModal"
+                  [disabled]="!finishOrderForm.form.valid">
+                  Zakończ zamówienie
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      }
+      <table class="notebook-table">
+        <thead>
+        <tr id="tableHeader">
+          <th (click)="toggleSort('clientName')" style="cursor: pointer;" title="Sortuj">Nazwa klienta {{ getSortIcon('clientName') }}</th>
+          <th (click)="toggleSort('orderName')" style="cursor: pointer;" title="Sortuj">Figurka {{ getSortIcon('orderName') }}</th>
+          <th (click)="toggleSort('status')" style="cursor: pointer;" title="Sortuj">Status {{ getSortIcon('status') }}</th>
+          <th (click)="toggleSort('quantity')" style="cursor: pointer;" title="Sortuj">Ilość {{ getSortIcon('quantity') }}</th>
+          <th (click)="toggleSort('price')" style="cursor: pointer;" title="Sortuj">Cena {{ getSortIcon('price') }}</th>
+          <th (click)="toggleSort('date')" style="cursor: pointer;" title="Sortuj">
+            Data złożenia {{ getSortIcon('date') }}
+          </th>
+          <th (click)="toggleSort('country')" style="cursor: pointer;" title="Sortuj">Kraj wysyłki {{ getSortIcon('country') }}</th>
+          <th></th>
+        </tr>
+        </thead>
+
+
+          <tbody>
+            @for (order of suspendedOrders | sort: sortKey:sortDirection; track order.id) {
+              <tr>
+                <td>{{ order.clientName}}</td>
+                <td>{{ order.orderName }}</td>
+                <td>{{ order.status}}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }} €</td>
+                <td>{{ order.date }}</td>
+                <td>{{ order.country }}</td>
+                <td class="editButton" (click)="editOrder(order)">Edytuj</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" style="text-align: center; color: #888;">
+                  Brak zamówień w systemie.
+                </td>
+              </tr>
+            }
+          </tbody>
+
+
+
+      </table>
+
+    </div>
+  </div>
+</div>
+

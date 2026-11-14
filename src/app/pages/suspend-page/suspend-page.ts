@@ -89,6 +89,9 @@ export class SuspendPage implements OnInit{
   openSuspendedOrdersPage(){
     this.router.navigate(['/suspendedPage']);
   }
+  openQueuePage(){
+    this.router.navigate(['queuePage']);
+  }
 
   async createNewOrder() {
     const newOrder = {
@@ -101,7 +104,7 @@ export class SuspendPage implements OnInit{
       orderPlannedDate : this.newOrderPlannedDate
     };
     try{
-      const response = await fetch(environment.apiUrl, {
+      const response = await fetch(environment.apiUrl + '/newOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

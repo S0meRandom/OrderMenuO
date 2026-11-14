@@ -42,15 +42,15 @@ export interface finishedOrder {
   templateUrl: './main-page.html',
 })
 export class MainPage implements OnInit{
+
   private cdr = inject(ChangeDetectorRef);
   private orderService = inject(OrderService);
   constructor(private router: Router){}
+
   newOrderModalOpen = false;
   finishOrderModalOpen = false;
-  citoOrdersPage = false;
-  mainOrdersPage = true;
-  suspendedOrdersPage = false;
-  finishedOrdersPage = false;
+
+
   newOrderClientName = '';
   newOrderOrderName = '';
   newOrderQuantity = 0;
@@ -58,11 +58,10 @@ export class MainPage implements OnInit{
   newOrderCountry = '';
   newOrderCito = false;
   newOrderPlannedDate = "";
+
   orders : Order[] = [];
-  citoOrders : Order[] = [];
   normalOrders: Order[] = [];
-  suspendedOrders: Order[] = [];
-  finishedOrders: finishedOrder[] = [];
+
   editOrderModalOpen = false;
   editOrderClientName = '';
   editOrderOrderName = '';
@@ -76,6 +75,7 @@ export class MainPage implements OnInit{
   editOrderPlannedDate = "";
   isEditOrderSuspended = false;
   finishOrderPostalCode = '';
+
   sortKey: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -100,24 +100,15 @@ export class MainPage implements OnInit{
 
   private updateFilteredLists(): void {
     this.orders = this.getOrdersFromOrderService;
-    this.citoOrders = this.getCitoOrders();
     this.normalOrders = this.getNormalOrders();
-    this.suspendedOrders = this.getSuspendedOrders();
     this.cdr.detectChanges();
   }
 
-  getCitoOrders(): Order[] {
-    return this.orders.filter(order => order.isCito === true && order.status === 'Aktywny');
-  }
+
   getNormalOrders(): Order[] {
     return this.orders.filter(order => order.isCito === false && order.status === 'Aktywny');
   }
-  getSuspendedOrders(): Order[]{
-    return this.orders.filter(order => order.isCito === false && order.status === 'Zawieszony');
-  }
-  openMainPage(){
-    this.router.navigate(['/mainPage']);
-  }
+
   openCitoOrdersPage(){
     this.router.navigate(['/citoPage']);
   }
@@ -126,6 +117,9 @@ export class MainPage implements OnInit{
   }
   openSuspendedOrdersPage(){
     this.router.navigate(['/suspendedPage']);
+  }
+  openQueuePage(){
+    this.router.navigate(['queuePage']);
   }
 
   async createNewOrder() {
@@ -139,7 +133,7 @@ export class MainPage implements OnInit{
       orderPlannedDate : this.newOrderPlannedDate
     };
     try{
-      const response = await fetch(environment.apiUrl, {
+      const response = await fetch(environment.apiUrl + '/newOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

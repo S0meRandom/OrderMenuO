@@ -52,6 +52,10 @@ export class FinishedPage implements  OnInit{
   openSuspendedOrdersPage(){
     this.router.navigate(['/suspendedPage']);
   }
+  openQueuePage(){
+    this.router.navigate(['queuePage']);
+  }
+
   get getFinishedOrdersFromOrderService() : finishedOrder[]{
     return this.orderService.finishedOrders();
   }
@@ -78,7 +82,7 @@ export class FinishedPage implements  OnInit{
       orderPlannedDate : this.newOrderPlannedDate
     };
     try{
-      const response = await fetch(environment.apiUrl, {
+      const response = await fetch(environment.apiUrl + '/newOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

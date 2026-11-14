@@ -1,0 +1,103 @@
+<div class="app-background">
+
+  <div class="tabs-background-strip">
+
+
+    <div class="tabs-container">
+      <div class="tab "
+           (click)="openMainPage()">
+        Zamówienia</div>
+      <div class="tab active" >
+        Kolejka</div>
+      <div class="tab"
+           (click)="openCitoOrdersPage()">
+        Na Cito
+      </div>
+      <div class="tab"  (click)="openFinishedOrdersPage()">
+        Zakończone
+      </div>
+      <div class="tab"  (click)="openSuspendedOrdersPage()">
+        Zawieszone</div>
+    </div>
+
+
+  </div>
+
+
+  <div class="folder-body">
+
+    <div class="paper-sheet">
+      <div class="button-div" (click)="openSelectOrderModal()">
+      <button class="add-btn">
+        <span class="plus-icon" > Dodaj do kolejki + </span>
+      </button>
+      </div>
+
+      @if (selectOrderModalOpen) {
+        <div class="modal-overlay" (click)="closeSelectOrderModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <h3>Wybierz zamówienie do kolejki</h3>
+
+            <div class="orders-select-list">
+              @for (order of availableOrders; track order.id) {
+                <div class="order-select-item" >
+                  <div class="order-info">
+                    <span class="order-client">{{ order.clientName }}</span>
+                    <span class="order-details">
+                      {{ order.orderName }} • Ilość: {{ order.quantity }} • Status: {{ order.status }}
+                    </span>
+                  </div>
+                  <button type="button" class="select-btn" (click)="addToQueue(order)">Wybierz</button>
+                </div>
+              } @empty {
+                <p class="empty-info">Brak dostępnych zamówień do dodania.</p>
+              }
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="cancel-btn" (click)="closeSelectOrderModal()">Anuluj</button>
+            </div>
+          </div>
+        </div>
+      }
+      <table class="notebook-table">
+        <thead>
+        <tr id="tableHeader">
+          <th>#</th>
+          <th>Nazwa klienta</th>
+          <th>Figurka</th>
+          <th>Status</th>
+          <th>Ilość</th>
+          <th>Cena</th>
+          <th>Data złożenia</th>
+          <th>Kraj wysyłki</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (order of queue; track order.id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>{{ order.clientName }}</td>
+              <td>{{ order.orderName }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.quantity }}</td>
+              <td>{{order.price}}</td>
+              <td>{{order.date}}</td>
+              <td>{{order.country}}</td>
+              <td class="remove-action" (click)="deleteFromQueue(order)">Usuń z kolejki</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="9" style="text-align: center; color: #888;">
+                Kolejka jest pusta.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+

@@ -4,17 +4,17 @@
 
 
     <div class="tabs-container">
-      <div class="tab"
-           [class.active]="mainOrdersPage" (click)="openMainPage()">
+      <div class="tab active"
+           (click)="openMainPage()">
         Zamówienia</div>
       <div class="tab"
-           [class.active]="citoOrdersPage" (click)="openCitoOrdersPage()">
-        Klienci na cito
+           (click)="openCitoOrdersPage()">
+        Na Cito
       </div>
-      <div class="tab" [class.active]="finishedOrdersPage" (click)="openFinishedOrdersPage()">
+      <div class="tab"  (click)="openFinishedOrdersPage()">
         Zakończone
       </div>
-      <div class="tab" [class.active]="suspendedOrdersPage" (click)="openSuspendedOrdersPage()">
+      <div class="tab"  (click)="openSuspendedOrdersPage()">
         Zawieszone</div>
     </div>
 

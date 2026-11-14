@@ -2,6 +2,9 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {SortPipe} from '../../sort-pipe';
+import {Router} from '@angular/router';
+import {OrderService} from '../../services/order';
+
 
 export interface Order {
   id: string,
@@ -40,6 +43,8 @@ export interface finishedOrder {
 })
 export class MainPage implements OnInit{
   private cdr = inject(ChangeDetectorRef);
+  private orderService = inject(OrderService);
+  constructor(private router: Router){}
   newOrderModalOpen = false;
   finishOrderModalOpen = false;
   citoOrdersPage = false;
@@ -76,44 +81,31 @@ export class MainPage implements OnInit{
 
 
   async ngOnInit() {
-    await this.fetchOrders();
-    await this.fetchFinishedOrders();
+    await Promise.all([
+      this.orderService.loadNormalOrders(),
+    ]);
+
+    this.updateFilteredLists();
+  }
+  get getOrdersFromOrderService(): Order[] {
+    return this.orderService.orders();
+  }
+  async refreshOrders(): Promise<void> {
+    await Promise.all([
+      this.orderService.loadNormalOrders(true),
+      this.orderService.loadFinishedOrders(true),
+    ]);
+    this.updateFilteredLists();
   }
 
-  async fetchOrders() {
-    try {
-      const response = await fetch(environment.apiUrl +'/orders', {
-        method: 'GET',
-        credentials: 'include'
-      });
-
-      if (response.ok) {
-        this.orders = await response.json();
-        this.citoOrders = this.getCitoOrders();
-        this.normalOrders = this.getNormalOrders();
-        this.suspendedOrders = this.getSuspendedOrders();
-        this.cdr.detectChanges();
-      }
-    } catch (error) {
-      console.error('Błąd podczas pobierania danych:', error);
-    }
+  private updateFilteredLists(): void {
+    this.orders = this.getOrdersFromOrderService;
+    this.citoOrders = this.getCitoOrders();
+    this.normalOrders = this.getNormalOrders();
+    this.suspendedOrders = this.getSuspendedOrders();
+    this.cdr.detectChanges();
   }
-  async fetchFinishedOrders(){
-    try {
-      const response = await fetch(environment.apiUrl + '/finishOrders', {
-        method: 'GET',
-        credentials: 'include'
-      });
 
-      if (response.ok) {
-        this.finishedOrders = await response.json();
-        this.cdr.detectChanges();
-      }
-    } catch (error) {
-      console.error('Błąd podczas pobierania danych:', error);
-    }
-
-  }
   getCitoOrders(): Order[] {
     return this.orders.filter(order => order.isCito === true && order.status === 'Aktywny');
   }
@@ -124,28 +116,16 @@ export class MainPage implements OnInit{
     return this.orders.filter(order => order.isCito === false && order.status === 'Zawieszony');
   }
   openMainPage(){
-    this.mainOrdersPage = true;
-    this.suspendedOrdersPage = false;
-    this.finishedOrdersPage = false;
-    this.citoOrdersPage = false;
+    this.router.navigate(['/mainPage']);
   }
   openCitoOrdersPage(){
-    this.citoOrdersPage = true;
-    this.mainOrdersPage = false;
-    this.suspendedOrdersPage = false;
-    this.finishedOrdersPage = false;
+    this.router.navigate(['/citoPage']);
   }
   openFinishedOrdersPage(){
-    this.finishedOrdersPage = true;
-    this.citoOrdersPage = false;
-    this.suspendedOrdersPage = false;
-    this.mainOrdersPage = false;
+    this.router.navigate(['/finishedPage']);
   }
   openSuspendedOrdersPage(){
-    this.suspendedOrdersPage = true;
-    this.finishedOrdersPage = false;
-    this.mainOrdersPage = false;
-    this.citoOrdersPage = false;
+    this.router.navigate(['/suspendedPage']);
   }
 
   async createNewOrder() {
@@ -168,7 +148,7 @@ export class MainPage implements OnInit{
       if(response.ok){
         this.resetNewOrderForm();
         this.newOrderModalOpen = false;
-        this.fetchOrders();
+        this.refreshOrders();
       }
     }catch(error){
 
@@ -187,7 +167,7 @@ export class MainPage implements OnInit{
       });
       if(response.ok){
         this.closeEditOrderModal();
-        await this.fetchOrders();
+        await this.refreshOrders();
       }
     }catch(error){
     }
@@ -216,8 +196,7 @@ export class MainPage implements OnInit{
       if(response.ok){
         this.closeEditOrderModal();
         this.finishOrderModalOpen = false;
-        await this.fetchOrders();
-        await this.fetchFinishedOrders();
+        await this.refreshOrders();
         this.finishOrderPostalCode = '';
       }
 
@@ -298,7 +277,7 @@ export class MainPage implements OnInit{
 
       if (response.ok) {
         this.closeEditOrderModal();
-        await this.fetchOrders();
+        await this.refreshOrders();
       } else {
         console.error('Błąd z serwera:', await response.text());
       }
@@ -327,7 +306,7 @@ export class MainPage implements OnInit{
       });
       if(response.ok){
         this.closeEditOrderModal();
-        await this.fetchOrders();
+        await this.refreshOrders();
       }else{
         console.error('Błąd z serwera:', await response.text());
       }

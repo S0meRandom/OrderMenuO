@@ -7,9 +7,11 @@ import { environment } from '../../environments/environment';
 export class OrderService {
   orders = signal<any[]>([]);
   finishedOrders = signal<any[]>([]);
+  queuedOrders = signal<any[]>([]);
 
   private isNormalLoaded = false;
   private isFinishedLoaded = false;
+  private isQueueLoaded = false;
 
   async loadNormalOrders(forceRefresh = false): Promise<void> {
     if (this.isNormalLoaded && !forceRefresh) {
@@ -47,6 +49,26 @@ export class OrderService {
         const data = await response.json();
         this.finishedOrders.set(data);
         this.isFinishedLoaded = true;
+      }
+    } catch (error) {
+      console.error('Błąd pobierania zakończonych zamówień:', error);
+    }
+  }
+  async loadQueuedOrders(forceRefresh = false): Promise<void> {
+    if (this.isQueueLoaded && !forceRefresh) {
+      return;
+    }
+
+    try {
+      const response = await fetch(environment.apiUrl + '/queue', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.queuedOrders.set(data);
+        this.isQueueLoaded = true;
       }
     } catch (error) {
       console.error('Błąd pobierania zakończonych zamówień:', error);
